@@ -11,7 +11,17 @@
   },
   "dependencies": {
     "react": "17.0.2",
-    "react-native": "0.66.2"
+    "react-native": "0.66.2",
+    "axios": "^0.21.1",
+    "react-native-platform-touchable": "^1.1.1",
+    "react-native-status-bar-height": "^2.1.0",
+    "react-native-tab-view": "^2.9.0",
+    "react-native-vector-icons": "^5.0.0",
+    "react-redux": "^7.1",
+    "redux": "^4.0.1",
+    "redux-axios-middleware": "^4.0.0",
+    "redux-persist": "^5.10.0",
+    "victory-native": "^30.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
