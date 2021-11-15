@@ -6,107 +6,62 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import React, { Component } from 'react';
+//import type {Node} from 'react';
+import {Platform, StatusBar, StyleSheet } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { Container, Root, StyleProvider, View } from 'native-base'
+//import * as Font from 'expo-font';
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+import getTheme from './native-base-theme/components'
+import platform from './native-base-theme/variables/platform'
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+import { Colors } from './constants'
+import store from './store'
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+import Tabs from './components/Tabs'
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
+
+export default class App extends Component {
+  state = { loading: true }
+
+  async componentWillMount() {
+    await Font.loadAsync({
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf')
+    })
+    this.setState({ loading: false })
+  }
+
+  render() {
+    if (this.state.loading) {
+      return <Container style={styles.container} />
+    }
+    return (
+      <Provider store={store.store}>
+        <PersistGate loading={null} persistor={store.persistor}>
+          <StyleProvider style={getTheme(platform)}>
+            <View style={styles.container}>
+              <Root>
+                <StatusBar barStyle="light-content" />
+                <Tabs />
+              </Root>
+            </View>
+          </StyleProvider>
+        </PersistGate>
+      </Provider>
+    )
+  }
+}
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
+  container: {
+    backgroundColor: Colors.BLUE1,
+    flex: 1,
+    paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() : StatusBar.currentHeight
+  }
 });
 
-export default App;
